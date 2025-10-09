@@ -1,3 +1,5 @@
+'use strict'
+
 // Example: count types in a big array
 const myArray = [
   true,

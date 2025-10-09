@@ -1,3 +1,5 @@
+'use strict'
+
 // hoisting functions and variables
 
 // output is undefined

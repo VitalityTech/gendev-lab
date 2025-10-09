@@ -1,3 +1,5 @@
+'use strict'
+
 // scalar and object increment functions 
 
 // function that increment's number 
