@@ -1,13 +1,13 @@
 {
-    "name": "demo-app",
-    "version": "1.0.0",
-    "description": "Usage examples for vitaliy-math-lib",
-    "author": "Hladchenko Vitaliy",
-    "license": "MIT",
-    "scripts": {
-        "start": "node main.js"
-    },
-    "dependencies": {
-        "vitaliy-math-lib": "file:../my-math-lib"
-    }
+  "name": "demo-app",
+  "version": "1.0.0",
+  "description": "Usage examples for vitaliy-math-lib",
+  "author": "Hladchenko Vitaliy",
+  "license": "MIT",
+  "scripts": {
+    "start": "node main.js"
+  },
+  "dependencies": {
+    "vitaliy-math-lib": "file:../my-math-lib"
+  }
 }
