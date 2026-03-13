@@ -1,0 +1,17 @@
+{
+  "name": "vitaliy-math-lib",
+  "version": "1.0.0",
+  "description": "Generator and timeout iterator utilities for KPI GenDev lab-2",
+  "main": "index.js",
+  "author": "Hladchenko Vitaliy",
+  "license": "MIT",
+  "scripts": {
+    "test": "node -e \"console.log('No tests yet')\""
+  },
+  "keywords": [
+    "generator",
+    "iterator",
+    "timeout",
+    "lab"
+  ]
+}
