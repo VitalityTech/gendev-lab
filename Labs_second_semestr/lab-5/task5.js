@@ -1,36 +1,67 @@
-const [tasks, setTasks] = useState(initialTasks);
-const [searchQuery, setSearchQuery] = useState("");
-const [sortByPriority, setSortByPriority] = useState("default");
+const asyncFilter = (arr, predicate, signal, callback) => {
+  if (signal?.aborted) return callback(new Error("Aborted"), null);
 
-const handleAddTask = (title, priority) => {
-  const newTask = {
-    id: Date.now(),
-    title: title || "Нове завдання",
-    description: "Створено через форму",
-    status: "todo",
-    priority: priority || "normal",
-    date: "Сьогодні",
-  };
-
-  setTasks((prevTasks) => [...prevTasks, newTask]);
+  setTimeout(() => {
+    if (signal?.aborted) return callback(new Error("Aborted"), null);
+    try {
+      callback(null, arr.filter(predicate));
+    } catch (err) {
+      callback(err, null);
+    }
+  }, 300);
 };
 
-const getTasksByStatus = (status) => {
-  const searchedTasks = memoizedSearch(tasks, searchQuery);
-  let filteredTasks = searchedTasks.filter((t) => t.status === status);
+const asyncFilterPromise = (arr, predicate, signal) => {
+  return new Promise((resolve, reject) => {
+    if (signal?.aborted) return reject(new Error("Aborted"));
 
-  if (sortByPriority === "default") return filteredTasks;
+    const abortHandler = () => reject(new Error("Aborted"));
+    if (signal) signal.addEventListener("abort", abortHandler);
 
-  const pq = new PriorityQueue();
-  const weights = { urgent: 4, high: 3, normal: 2, low: 1 };
+    setTimeout(() => {
+      if (signal) signal.removeEventListener("abort", abortHandler);
+      if (signal?.aborted) return reject(new Error("Aborted"));
 
-  filteredTasks.forEach((task) => {
-    let w = weights[task.priority] || 0;
-    if (sortByPriority === "low-high") w = -w;
-    pq.enqueue(task, w);
+      try {
+        resolve(arr.filter(predicate));
+      } catch (err) {
+        reject(err);
+      }
+    }, 300);
+  });
+};
+
+const mockTasks = [
+  { id: 1, title: "Learn React", status: "done" },
+  { id: 2, title: "Do Lab 5", status: "todo" },
+  { id: 3, title: "Fix UI", status: "todo" },
+];
+
+const isTodo = (task) => task.status === "todo";
+
+async function runDemos() {
+  asyncFilter(mockTasks, isTodo, null, (err, res) => {
+    if (err) console.error(err.message);
+    else console.log(res);
   });
 
-  let sorted = [];
-  while (!pq.isEmpty()) sorted.push(pq.dequeue());
-  return sorted;
-};
+  try {
+    const res = await asyncFilterPromise(mockTasks, isTodo, null);
+    console.log(res);
+  } catch (err) {
+    console.error(err.message);
+  }
+
+  try {
+    const controller = new AbortController();
+    const promise = asyncFilterPromise(mockTasks, isTodo, controller.signal);
+
+    controller.abort();
+
+    await promise;
+  } catch (err) {
+    console.log(err.message);
+  }
+}
+
+runDemos();
